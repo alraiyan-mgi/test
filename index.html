@@ -272,13 +272,13 @@ $("rr").innerHTML=rkT(grp(rs,1).map(g=>{const s=sumS(g.rs);return{r:g.k,k:g.k.re
 $("tr").innerHTML=rkT(rs.map(r=>{const v=rv(r);return{k:r[2].replace(/_T$/,""),g:r[1].replace(/_R$/,""),w:r[0].replace(/_W$/,""),t:v[0],P:v[1],D:v[2],S:v[3],st:v[4],p:v[mi]/v[0]}}).filter(x=>x.t>0).sort(byP),2);
 // forecast
 const dm=Math.max(1,Math.min(+$("dm").value||31,31)),dp=Math.max(1,Math.min(+$("dp").value||1,dm));
-const ld=Math.max(1,Math.min(window.CUR||dp,dm)),T=a.t,M=a[met],rr=M/ld,pj=rr*dm,rq=dm>ld?Math.max((T-M)/(dm-ld),0):0;
+const ld=Math.max(1,Math.min(window.CUR||dp,dm)),T=a.t,M=a[met],rr=M/ld,pj=rr*dm,wl=Math.max(dm-ld,0),rq=wl>0?Math.max((T-M)/wl,0):0;
 $("t11").textContent="Run rate & forecast";
 $("hoff").textContent=window.OFF!=null?window.OFF:dm-dp;$("hwd").textContent=(window.WD!=null?window.WD:dm-(window.OFF||0))+" days";$("hps").textContent=dp+" days";
-const FK=[["Till-date "+ML,n(M),pc(M/T)+" of target"],["Daily run rate",n(rr,1),"till-date ÷ "+ld+" (latest date)"],["Required per day",dm>ld?n(rq,1):"–",(dm-ld)+" days left to reach target"],["Projected month-end",n(pj),pc(pj/T)+" of target · run rate × "+dm+" days"],[pj>=T?"Surplus vs target":"Gap vs target",n(Math.abs(pj-T)),"target "+n(T)],["Pace vs target",pc(M/(T*ld/dm)),"actual ÷ expected till today"]];
+const FK=[["Till-date "+ML,n(M),pc(M/T)+" of target"],["Daily run rate",n(rr,1),"till-date ÷ "+ld+" (latest date)"],["Required per day",wl>0?n(rq,1):"–",wl+" days left to reach target ("+dm+" − "+ld+")"],["Projected month-end",n(pj),pc(pj/T)+" of target · run rate × "+dm+" days"],[pj>=T?"Surplus vs target":"Gap vs target",n(Math.abs(pj-T)),"target "+n(T)],["Pace vs target",pc(M/(T*ld/dm)),"actual ÷ expected till today"]];
 $("fk").innerHTML=FK.map(x=>`<div class="card"><div class="kl">${x[0]}</div><div class="kv">${x[1]}</div><div class="sub">${x[2]}</div></div>`).join("");
 const lvl=$("ft").value!="All territories"?2:$("fr").value!="All regions"?2:$("fw").value!="All wings"?1:0,LN=["Wing","Region","Territory"][lvl];
-const fr2=grp(rs,lvl).map(g=>{const s=sumS(g.rs),m=s[met],r=m/ld;return{k:g.k.replace(/_[WRT]$/,"").replace(/_/g," "),t:s.t,m,r,pj:r*dm,pp:r*dm/s.t,rq:dm>ld?Math.max((s.t-m)/(dm-ld),0):0}}).filter(x=>x.t>0).sort((x,y)=>y.pp-x.pp);
+const fr2=grp(rs,lvl).map(g=>{const s=sumS(g.rs),m=s[met],r=m/ld;return{k:g.k.replace(/_[WRT]$/,"").replace(/_/g," "),t:s.t,m,r,pj:r*dm,pp:r*dm/s.t,rq:wl>0?Math.max((s.t-m)/wl,0):0}}).filter(x=>x.t>0).sort((x,y)=>y.pp-x.pp);
 $("fwt").innerHTML="<table><tr><th>"+LN+"</th><th>Target</th><th>Till-date</th><th>Run rate / day</th><th>Required / day</th><th>Projected</th><th>Proj %</th><th>Status</th></tr>"+fr2.map(x=>`<tr><td>${x.k}</td><td>${n(x.t)}</td><td>${n(x.m)}</td><td>${n(x.r,1)}</td><td>${n(x.rq,1)}</td><td>${n(x.pj)}</td><td>${pl(x.pp)}</td><td style="color:${col(x.pp)}">${x.pp>=1?"On track":x.pp>=.8?"Watch":"At risk"}</td></tr>`).join("")+"</table>";
 
 // stock analysis
